@@ -1,0 +1,89 @@
+name: muslim_time_one
+description: "Muslim Time — Aplikasi Pesantren Modern dengan fitur waktu shalat, kalender Islam, Al-Quran, berita, dan qibla."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Navigation
+  go_router: ^14.2.7
+
+  # HTTP & API
+  dio: ^5.4.3
+
+  # Supabase (News)
+  supabase_flutter: ^2.5.1
+
+  # Prayer Times
+  adhan: ^2.0.0+1
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+
+  # Notifications
+  flutter_local_notifications: ^17.2.2
+  timezone: ^0.9.4
+
+  # Audio (Tilawah)
+  just_audio: ^0.9.39
+
+  # Storage & Cache
+  shared_preferences: ^2.3.2
+  hive_flutter: ^1.1.0
+  hive: ^2.2.3
+
+  # UI / UX
+  flutter_svg: ^2.0.10+1
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+  lottie: ^3.1.2
+  flutter_screenutil: ^5.9.3
+  google_fonts: ^6.2.1
+  intl: any
+  percent_indicator: ^4.2.3
+
+  # Compass / Sensor
+  flutter_compass: ^0.8.0
+
+  # Misc
+  permission_handler: ^11.3.1
+  connectivity_plus: ^6.0.3
+  url_launcher: ^6.3.0
+  package_info_plus: ^8.0.2
+  equatable: ^2.0.5
+  hijri: ^3.0.0
+  intl_utils: ^2.8.11
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.12
+  riverpod_generator: ^2.4.3
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/lottie/
+    - assets/fonts/
+    - assets/datas/
+    - assets/datas/surah/
+    - assets/datas/juz/
+  fonts:
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
+        - asset: assets/fonts/Amiri-Bold.ttf
+          weight: 700
