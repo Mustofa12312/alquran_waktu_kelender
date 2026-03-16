@@ -7,6 +7,7 @@ import '../../features/quran/presentation/screens/surah_detail_screen.dart';
 import '../../features/news/presentation/screens/news_list_screen.dart';
 import '../../features/qibla/presentation/screens/qibla_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/quran/presentation/screens/bookmarks_screen.dart';
 import '../../shared/widgets/main_scaffold.dart';
 
 enum AppRoute {
@@ -18,6 +19,7 @@ enum AppRoute {
   settings,
   surahDetail,
   newsDetail,
+  bookmarks,
 }
 
 final goRouter = GoRouter(
@@ -85,6 +87,11 @@ final goRouter = GoRouter(
           pageBuilder: (context, state) => const NoTransitionPage(
             child: SettingsScreen(),
           ),
+        ),
+        GoRoute(
+          path: '/bookmarks',
+          name: AppRoute.bookmarks.name,
+          builder: (context, state) => const BookmarksScreen(),
         ),
       ],
     ),

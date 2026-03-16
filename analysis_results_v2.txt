@@ -1,0 +1,64 @@
+Analyzing muslim_time_one...                                    
+
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:215:37 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/islamic_calendar/presentation/screens/calendar_screen.dart:245:48 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/features/islamic_calendar/presentation/screens/calendar_screen.dart:290:9 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/islamic_calendar/presentation/screens/calendar_screen.dart:292:18 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/islamic_calendar/presentation/screens/calendar_screen.dart:329:24 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/islamic_calendar/presentation/screens/calendar_screen.dart:338:24 • prefer_const_constructors
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/news/presentation/screens/news_list_screen.dart:201:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/news/presentation/screens/news_list_screen.dart:264:34 • deprecated_member_use
+   info • The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:6:8 • unnecessary_import
+  error • Target of URI doesn't exist: '../../../../shared/widgets/dynamic_sky_background.dart' • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:10:8 • uri_does_not_exist
+  error • The method 'DynamicSkyBackground' isn't defined for the type '_PrayerTimesScreenState' • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:61:13 • undefined_method
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:106:11 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:108:23 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:109:15 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:111:24 • prefer_const_constructors
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:141:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:144:36 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:149:33 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:163:19 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:165:28 • prefer_const_constructors
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:211:90 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:225:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:228:43 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:245:20 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:246:25 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:247:17 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:249:26 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:255:17 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:257:26 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:265:17 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:267:26 • prefer_const_constructors
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:299:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:372:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:373:34 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:377:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:388:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:409:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/screens/prayer_times_screen.dart:446:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/prayer_times/presentation/widgets/prayer_time_overlay.dart:13:27 • deprecated_member_use
+   info • Use 'const' for final variables initialized to a constant value • lib/features/qibla/presentation/screens/qibla_screen.dart:33:5 • prefer_const_declarations
+   info • Use 'const' for final variables initialized to a constant value • lib/features/qibla/presentation/screens/qibla_screen.dart:34:5 • prefer_const_declarations
+   info • Use 'const' for final variables initialized to a constant value • lib/features/qibla/presentation/screens/qibla_screen.dart:35:5 • prefer_const_declarations
+   info • Use 'const' for final variables initialized to a constant value • lib/features/qibla/presentation/screens/qibla_screen.dart:36:5 • prefer_const_declarations
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/qibla/presentation/screens/qibla_screen.dart:111:46 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/qibla/presentation/screens/qibla_screen.dart:157:71 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/quran/presentation/screens/bookmarks_screen.dart:38:76 • deprecated_member_use
+warning • The value of the local variable 'favorites' isn't used • lib/features/quran/presentation/screens/surah_detail_screen.dart:36:11 • unused_local_variable
+   info • Use 'const' with the constructor to improve performance • lib/features/settings/presentation/screens/settings_screen.dart:115:11 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/features/settings/presentation/screens/settings_screen.dart:117:23 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/features/settings/presentation/screens/settings_screen.dart:127:15 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/features/settings/presentation/screens/settings_screen.dart:129:24 • prefer_const_constructors
+   info • 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre • lib/features/settings/presentation/screens/settings_screen.dart:263:7 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/shared/widgets/main_scaffold.dart:67:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/shared/widgets/main_scaffold.dart:97:57 • deprecated_member_use
+   info • Don't invoke 'print' in production code • test_hijri.dart:1:120 • avoid_print
+   info • Don't invoke 'print' in production code • test_hijri2.dart:1:100 • avoid_print
+   info • Don't invoke 'print' in production code • test_hijri2.dart:1:124 • avoid_print
+   info • Don't invoke 'print' in production code • test_hijri2.dart:1:173 • avoid_print
+   info • Don't invoke 'print' in production code • test_hijri3.dart:1:107 • avoid_print
+   info • Don't invoke 'print' in production code • test_hijri4.dart:1:109 • avoid_print
+
+60 issues found. (ran in 4.6s)

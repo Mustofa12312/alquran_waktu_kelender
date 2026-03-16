@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../providers/surah_provider.dart';
+import '../../../../core/providers/favorites_provider.dart';
 
 class SurahDetailScreen extends ConsumerStatefulWidget {
   final int surahId;
@@ -32,6 +33,8 @@ class _SurahDetailScreenState extends ConsumerState<SurahDetailScreen> {
   Widget build(BuildContext context) {
     final surahDetailAsync = ref.watch(surahDetailProvider(widget.surahId));
     final quranSettings = ref.watch(quranSettingsProvider);
+    final favorites = ref.watch(favoritesProvider);
+    final favoritesNotifier = ref.read(favoritesProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.darkBg,
@@ -163,9 +166,37 @@ class _SurahDetailScreenState extends ConsumerState<SurahDetailScreen> {
                                     onPressed: () {},
                                   ),
                                   IconButton(
-                                    icon: const Icon(Icons.bookmark_border,
-                                        color: AppColors.textMuted, size: 20),
-                                    onPressed: () {},
+                                    icon: Icon(
+                                      favoritesNotifier.isBookmarked(
+                                              surah.nomor.toString(), ayat.nomor)
+                                          ? Icons.bookmark
+                                          : Icons.bookmark_border,
+                                      color: favoritesNotifier.isBookmarked(
+                                              surah.nomor.toString(), ayat.nomor)
+                                          ? AppColors.gold
+                                          : AppColors.textMuted,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      favoritesNotifier.toggleBookmark(
+                                        surahId: surah.nomor.toString(),
+                                        surahName: surah.namaLatin,
+                                        verseNumber: ayat.nomor,
+                                        arabicText: ayat.ar,
+                                        translation: ayat.idn,
+                                      );
+                                      
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            favoritesNotifier.isBookmarked(surah.nomor.toString(), ayat.nomor) 
+                                            ? 'Ayat ditambahkan ke bookmark' 
+                                            : 'Ayat dihapus dari bookmark'
+                                          ),
+                                          duration: const Duration(seconds: 1),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

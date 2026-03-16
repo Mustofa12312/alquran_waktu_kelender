@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../providers/settings_provider.dart';
 
@@ -80,6 +81,13 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Tentang Aplikasi',
             subtitle: 'Versi 1.0.0',
             icon: Icons.info_outline,
+            onTap: () {},
+          ),
+          _buildSettingsTile(
+            title: 'Bookmark Saya',
+            subtitle: 'Daftar ayat yang disimpan',
+            icon: Icons.bookmark_outline,
+            onTap: () => context.push('/bookmarks'),
           ),
           const SizedBox(height: 40),
           _buildLogoutButton(),
@@ -204,6 +212,7 @@ class SettingsScreen extends ConsumerWidget {
     required String title,
     required String subtitle,
     required IconData icon,
+    VoidCallback? onTap,
   }) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
@@ -225,7 +234,7 @@ class SettingsScreen extends ConsumerWidget {
         style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
       ),
       trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-      onTap: () {},
+      onTap: onTap,
     );
   }
 

@@ -3,8 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'dart:ui';
 import '../../../../core/theme/app_theme.dart';
 import '../providers/location_provider.dart';
+import '../providers/prayer_times_provider.dart';
+import '../../../../shared/widgets/dynamic_sky_background.dart';
+import '../widgets/prayer_time_overlay.dart';
+import 'package:adhan/adhan.dart' show Prayer;
 
 class PrayerTimesScreen extends ConsumerStatefulWidget {
   const PrayerTimesScreen({super.key});
@@ -38,26 +43,42 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
 
   @override
   Widget build(BuildContext context) {
+    final currentPrayer = ref.watch(currentPrayerProvider);
+
+    // Listen to prayer changes to show overlay
+    ref.listen(currentPrayerProvider, (previous, next) {
+      if (next != Prayer.none && next != previous) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => PrayerTimeOverlay(prayerName: _getPrayerName(next)),
+        );
+      }
+    });
+
     return Scaffold(
       backgroundColor: AppColors.darkBg,
-      body: CustomScrollView(
-        slivers: [
-          _buildAppBar(),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  _buildPrayerCountdown(),
-                  const SizedBox(height: 24),
-                  _buildPrayerTimesList(),
-                  const SizedBox(height: 24),
-                  _buildIslamicDate(),
-                ],
+      body: DynamicSkyBackground(
+        currentPrayer: currentPrayer,
+        child: CustomScrollView(
+          slivers: [
+            _buildAppBar(),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    _buildPrayerCountdown(),
+                    const SizedBox(height: 24),
+                    _buildPrayerTimesList(),
+                    const SizedBox(height: 24),
+                    _buildIslamicDate(),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -66,7 +87,8 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
     return SliverAppBar(
       expandedHeight: 60,
       floating: true,
-      backgroundColor: AppColors.darkBg,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
       title: Row(
         children: [
           Container(
@@ -116,22 +138,15 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF1B4D3E),
-            Color(0xFF0F2D23),
-          ],
-        ),
+        color: AppColors.darkCard.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: AppColors.primary.withOpacity(0.5),
+          color: AppColors.primary.withValues(alpha: 0.5),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 20,
             spreadRadius: -5,
           ),
@@ -207,14 +222,14 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.gold.withOpacity(0.15),
+                  color: AppColors.gold.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: AppColors.gold.withOpacity(0.4),
+                    color: AppColors.gold.withValues(alpha: 0.4),
                   ),
                 ),
-                child: Text(
-                  'Maghrib',
+                child: const Text(
+                  'Dashboard',
                   style: TextStyle(
                     color: AppColors.gold,
                     fontSize: 12,
@@ -259,7 +274,6 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
             ),
           ),
           const SizedBox(height: 24),
-          // Countdown
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -282,14 +296,14 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
           width: 70,
           height: 70,
           decoration: BoxDecoration(
-            color: AppColors.darkCard,
+            color: AppColors.darkCard.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.darkBorder),
           ),
           alignment: Alignment.center,
           child: Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -299,7 +313,7 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
         const SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             color: AppColors.textSecondary,
             fontSize: 11,
           ),
@@ -309,8 +323,8 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
   }
 
   Widget _buildCountdownSeparator() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12, left: 8, right: 8),
+    return const Padding(
+      padding: EdgeInsets.only(bottom: 12, left: 8, right: 8),
       child: Text(
         ':',
         style: TextStyle(
@@ -325,19 +339,17 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
   Widget _buildPrayerTimesList() {
     const prayers = [
       _PrayerData('Subuh', '04:45', AppColors.fajr, Icons.nights_stay_rounded),
-      _PrayerData(
-          'Terbit', '06:02', AppColors.sunrise, Icons.wb_twilight_rounded),
+      _PrayerData('Terbit', '06:02', AppColors.sunrise, Icons.wb_twilight_rounded),
       _PrayerData('Dzuhur', '12:02', AppColors.dhuhr, Icons.wb_sunny_rounded),
       _PrayerData('Ashar', '15:15', AppColors.asr, Icons.cloud_rounded),
-      _PrayerData('Maghrib', '18:01', AppColors.maghrib,
-          Icons.wb_twilight_outlined),
+      _PrayerData('Maghrib', '18:01', AppColors.maghrib, Icons.wb_twilight_outlined),
       _PrayerData('Isya', '19:15', AppColors.isha, Icons.dark_mode_rounded),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Waktu Shalat Hari Ini',
           style: TextStyle(
             color: AppColors.textPrimary,
@@ -357,12 +369,12 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: isNext
-            ? AppColors.primary.withOpacity(0.15)
-            : AppColors.darkCard,
+            ? AppColors.primary.withValues(alpha: 0.15)
+            : AppColors.darkCard.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isNext
-              ? AppColors.primary.withOpacity(0.5)
+              ? AppColors.primary.withValues(alpha: 0.5)
               : AppColors.darkBorder,
           width: isNext ? 1.5 : 1,
         ),
@@ -373,7 +385,7 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: prayer.color.withOpacity(0.15),
+              color: prayer.color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(prayer.icon, color: prayer.color, size: 20),
@@ -392,13 +404,12 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
           if (isNext)
             Container(
               margin: const EdgeInsets.only(right: 8),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: AppColors.gold.withOpacity(0.15),
+                color: AppColors.gold.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
+              child: const Text(
                 'Berikutnya',
                 style: TextStyle(
                   color: AppColors.gold,
@@ -423,28 +434,22 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
 
   Widget _buildIslamicDate() {
     final now = DateTime.now();
-    
     HijriCalendar.setLocal('ar');
     final hijri = HijriCalendar.now();
-    
-    // Format Gregorian: Senin, 15 Maret 2026
     final gregorianDate = DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(now);
-    
-    // Format Hijriah: ٢٧ رمضان ١٤٤٧
-    final formattedHijriDate = '${hijri.toFormat("dd MMMM yyyy")}';
+    final formattedHijriDate = hijri.toFormat("dd MMMM yyyy");
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.darkCard,
+        color: AppColors.darkCard.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.darkBorder),
       ),
       child: Row(
         children: [
-          const Icon(Icons.calendar_today_rounded,
-              color: AppColors.gold, size: 28),
+          const Icon(Icons.calendar_today_rounded, color: AppColors.gold, size: 28),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -472,6 +477,18 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
         ],
       ),
     );
+  }
+
+  String _getPrayerName(Prayer prayer) {
+    switch (prayer) {
+      case Prayer.fajr: return 'Subuh';
+      case Prayer.sunrise: return 'Terbit';
+      case Prayer.dhuhr: return 'Dzuhur';
+      case Prayer.asr: return 'Ashar';
+      case Prayer.maghrib: return 'Maghrib';
+      case Prayer.isha: return 'Isya';
+      default: return '';
+    }
   }
 }
 
