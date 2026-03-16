@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 import '../providers/surah_provider.dart';
 import '../../domain/models/surah.dart';
 
@@ -70,6 +71,9 @@ class _SurahListScreenState extends ConsumerState<SurahListScreen> {
   }
 
   Widget _buildLastRead() {
+    final lastRead = ref.watch(lastReadProvider);
+    if (lastRead == null) return const SizedBox.shrink();
+
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       padding: const EdgeInsets.all(16),
@@ -78,10 +82,17 @@ class _SurahListScreenState extends ConsumerState<SurahListScreen> {
           colors: [Color(0xFF7C6FB0), Color(0xFF4A3B8C)],
         ),
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF4A3B8C).withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          const Icon(Icons.bookmark, color: AppColors.gold, size: 28),
+          const Icon(Icons.menu_book_rounded, color: AppColors.gold, size: 28),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -92,23 +103,25 @@ class _SurahListScreenState extends ConsumerState<SurahListScreen> {
                   style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Al-Baqarah : 255',
-                  style: TextStyle(
+                Text(
+                   lastRead.surahName,
+                  style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 15,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const Text(
-                  'Ayat Kursi',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                  'Klik lanjut untuk membaca',
+                  style: TextStyle(color: Colors.white70, fontSize: 11),
                 ),
               ],
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              context.go('/quran/${lastRead.surahId}');
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.gold,
               foregroundColor: AppColors.darkBg,
@@ -117,7 +130,7 @@ class _SurahListScreenState extends ConsumerState<SurahListScreen> {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             ),
-            child: const Text('Lanjut', style: TextStyle(fontSize: 12)),
+            child: const Text('Lanjut', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ),
         ],
       ),

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:adhan/adhan.dart';
 import 'package:geolocator/geolocator.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
+import '../../../../core/services/notification_service.dart';
 
 // Provider buat menyimpan Posisi lat lng
 final coordinatesProvider = FutureProvider<Coordinates?>((ref) async {
@@ -45,8 +47,54 @@ final prayerTimesProvider = FutureProvider<PrayerTimes?>((ref) async {
   params.madhab = Madhab.shafi;
 
   final date = DateComponents.from(DateTime.now());
-  return PrayerTimes(coordsAsync, date, params);
+  final prayerTimes = PrayerTimes(coordsAsync, date, params);
+  
+  // Ambil service dan preferensi azan
+  final adhanEnabled = ref.watch(adhanSettingsProvider);
+  final adhanSound = ref.watch(adhanSoundProvider);
+  if (adhanEnabled) {
+    _scheduleAllPrayers(prayerTimes, adhanSound);
+  }
+
+  return prayerTimes;
 });
+
+void _scheduleAllPrayers(PrayerTimes pt, String soundName) {
+  final service = NotificationService();
+  service.cancelAllNotifications();
+  
+  if (pt.fajr.isAfter(DateTime.now())) {
+    service.schedulePrayerNotification(
+      id: 1, title: 'Waktu Subuh', body: 'Sudah masuk waktu Subuh',
+      scheduledTime: pt.fajr, playAzanSound: true, soundName: soundName,
+    );
+  }
+  if (pt.dhuhr.isAfter(DateTime.now())) {
+    service.schedulePrayerNotification(
+      id: 2, title: 'Waktu Dzuhur', body: 'Sudah masuk waktu Dzuhur',
+      scheduledTime: pt.dhuhr, playAzanSound: true, soundName: soundName,
+    );
+  }
+  if (pt.asr.isAfter(DateTime.now())) {
+    service.schedulePrayerNotification(
+      id: 3, title: 'Waktu Ashar', body: 'Sudah masuk waktu Ashar',
+      scheduledTime: pt.asr, playAzanSound: true, soundName: soundName,
+    );
+  }
+  if (pt.maghrib.isAfter(DateTime.now())) {
+    service.schedulePrayerNotification(
+      id: 4, title: 'Waktu Maghrib', body: 'Sudah masuk waktu Maghrib',
+      scheduledTime: pt.maghrib, playAzanSound: true, soundName: soundName,
+    );
+  }
+  if (pt.isha.isAfter(DateTime.now())) {
+    service.schedulePrayerNotification(
+      id: 5, title: 'Waktu Isya', body: 'Sudah masuk waktu Isya',
+      scheduledTime: pt.isha, playAzanSound: true, soundName: soundName,
+    );
+  }
+}
+
 
 final currentPrayerProvider = Provider<Prayer>((ref) {
   final prayerTimesAsync = ref.watch(prayerTimesProvider);

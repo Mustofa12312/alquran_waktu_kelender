@@ -4,11 +4,14 @@ import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
 
 import 'package:intl/date_symbol_data_local.dart';
+import 'core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   await initializeDateFormatting('id_ID', null);
+  
+  await NotificationService().init();
   
   // Here we would initialize Hive, Supabase, etc.
   

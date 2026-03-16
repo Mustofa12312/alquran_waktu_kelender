@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:hijri/hijri_calendar.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../providers/location_provider.dart';
-import '../providers/prayer_times_provider.dart';
 
 class PrayerTimesScreen extends ConsumerStatefulWidget {
   const PrayerTimesScreen({super.key});
@@ -103,7 +103,7 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
               color: AppColors.textPrimary),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () => context.push('/settings'),
           icon: const Icon(Icons.settings_outlined,
               color: AppColors.textPrimary),
         ),

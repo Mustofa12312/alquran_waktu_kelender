@@ -81,6 +81,8 @@ flutter:
     - assets/datas/
     - assets/datas/surah/
     - assets/datas/juz/
+    - assets/audio/azan/
+    - assets/audio/imsak/
   fonts:
     - family: Amiri
       fonts:

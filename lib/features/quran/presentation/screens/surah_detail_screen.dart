@@ -1,16 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 import '../providers/surah_provider.dart';
 
-class SurahDetailScreen extends ConsumerWidget {
+class SurahDetailScreen extends ConsumerStatefulWidget {
   final int surahId;
 
   const SurahDetailScreen({super.key, required this.surahId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final surahDetailAsync = ref.watch(surahDetailProvider(surahId));
+  ConsumerState<SurahDetailScreen> createState() => _SurahDetailScreenState();
+}
+
+class _SurahDetailScreenState extends ConsumerState<SurahDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Update terakhir baca saat masuk
+    Future.microtask(() => _updateLastRead());
+  }
+
+  void _updateLastRead() {
+    final surahDetailAsync = ref.read(surahDetailProvider(widget.surahId));
+    surahDetailAsync.whenData((surah) {
+      ref.read(lastReadProvider.notifier).updateLastRead(surah.nomor, surah.namaLatin);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final surahDetailAsync = ref.watch(surahDetailProvider(widget.surahId));
+    final quranSettings = ref.watch(quranSettingsProvider);
 
     return Scaffold(
       backgroundColor: AppColors.darkBg,
@@ -152,37 +173,42 @@ class SurahDetailScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 12),
                           // Arab
-                          Text(
-                            ayat.ar,
-                            textAlign: TextAlign.right,
-                            textDirection: TextDirection.rtl,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 28,
-                              fontFamily: 'Amiri',
-                              height: 2.0,
+                          if (quranSettings.showArabic)
+                            Text(
+                              ayat.ar,
+                              textAlign: TextAlign.right,
+                              textDirection: TextDirection.rtl,
+                              style: const TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 28,
+                                fontFamily: 'Amiri',
+                                height: 2.0,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
+                          if (quranSettings.showArabic && (quranSettings.showLatin || quranSettings.showTranslation))
+                             const SizedBox(height: 16),
                           // Latin (transliterasi)
-                          Text(
-                            ayat.tr,
-                            style: const TextStyle(
-                              color: AppColors.primaryLight,
-                              fontSize: 14,
-                              fontStyle: FontStyle.italic,
+                          if (quranSettings.showLatin)
+                            Text(
+                              ayat.tr,
+                              style: const TextStyle(
+                                color: AppColors.primaryLight,
+                                fontSize: 14,
+                                fontStyle: FontStyle.italic,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
+                          if (quranSettings.showLatin && quranSettings.showTranslation)
+                            const SizedBox(height: 8),
                           // Terjemahan
-                          Text(
-                            ayat.idn,
-                            style: const TextStyle(
-                              color: AppColors.textMuted,
-                              fontSize: 15,
-                              height: 1.5,
+                          if (quranSettings.showTranslation)
+                            Text(
+                              ayat.idn,
+                              style: const TextStyle(
+                                color: AppColors.textMuted,
+                                fontSize: 15,
+                                height: 1.5,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     );
