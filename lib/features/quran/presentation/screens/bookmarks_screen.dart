@@ -13,7 +13,8 @@ class BookmarksScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.darkBg,
       appBar: AppBar(
-        title: const Text('Bookmark Saya', style: TextStyle(color: AppColors.textPrimary)),
+        title: const Text('Bookmark Saya',
+            style: TextStyle(color: AppColors.textPrimary)),
         backgroundColor: AppColors.darkBg,
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
       ),
@@ -35,11 +36,15 @@ class BookmarksScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.bookmark_border, size: 80, color: AppColors.textMuted.withOpacity(0.5)),
+          Icon(Icons.bookmark_border,
+              size: 80, color: AppColors.textMuted.withOpacity(0.5)),
           const SizedBox(height: 16),
           const Text(
             'Belum ada bookmark',
-            style: TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
@@ -52,7 +57,8 @@ class BookmarksScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBookmarkItem(BuildContext context, WidgetRef ref, dynamic bookmark) {
+  Widget _buildBookmarkItem(
+      BuildContext context, WidgetRef ref, dynamic bookmark) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -76,7 +82,8 @@ class BookmarksScreen extends ConsumerWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.delete_outline, color: AppColors.error, size: 20),
+                icon: const Icon(Icons.delete_outline,
+                    color: AppColors.error, size: 20),
                 onPressed: () {
                   ref.read(favoritesProvider.notifier).toggleBookmark(
                         surahId: bookmark['surahId'],

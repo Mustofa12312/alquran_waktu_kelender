@@ -39,12 +39,12 @@ class LocationNotifier extends AsyncNotifier<String> {
       try {
         Position position = await Geolocator.getCurrentPosition(
           locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium),
-        );
+        ).timeout(const Duration(seconds: 5));
 
         List<Placemark> placemarks = await placemarkFromCoordinates(
           position.latitude,
           position.longitude,
-        );
+        ).timeout(const Duration(seconds: 5));
 
         if (placemarks.isNotEmpty) {
           Placemark place = placemarks.first;

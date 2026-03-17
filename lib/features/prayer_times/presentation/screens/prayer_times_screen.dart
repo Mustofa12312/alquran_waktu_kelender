@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'dart:async';
 import 'dart:ui';
 import '../../../../core/theme/app_theme.dart';
 import '../providers/location_provider.dart';
@@ -22,6 +23,7 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
+  late Timer _countdownTimer;
 
   @override
   void initState() {
@@ -33,11 +35,17 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
     _pulseAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
+
+    // Update countdown setiap detik
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
   void dispose() {
     _pulseController.dispose();
+    _countdownTimer.cancel();
     super.dispose();
   }
 
@@ -47,11 +55,13 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
 
     // Listen to prayer changes to show overlay
     ref.listen(currentPrayerProvider, (previous, next) {
-      if (next != Prayer.none && next != previous) {
+      // Hanya munculkan popup jika benar-benar berubah dari shalat sebelumnya (bukan pas startup)
+      if (next != Prayer.none && previous != null && previous != Prayer.none && next != previous) {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => PrayerTimeOverlay(prayerName: _getPrayerName(next)),
+          builder: (context) =>
+              PrayerTimeOverlay(prayerName: _getPrayerName(next)),
         );
       }
     });
@@ -107,7 +117,7 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Muslim Time',
+                'Time Taman Sari',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -126,8 +136,8 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
         ),
         IconButton(
           onPressed: () => context.push('/settings'),
-          icon: const Icon(Icons.settings_outlined,
-              color: AppColors.textPrimary),
+          icon:
+              const Icon(Icons.settings_outlined, color: AppColors.textPrimary),
         ),
       ],
     );
@@ -208,7 +218,10 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
                             ),
                             const SizedBox(width: 6),
                             if (!locationAsync.isLoading)
-                              Icon(Icons.refresh_rounded, color: AppColors.textSecondary.withOpacity(0.5), size: 16),
+                              Icon(Icons.refresh_rounded,
+                                  color:
+                                      AppColors.textSecondary.withValues(alpha: 0.5),
+                                  size: 16),
                           ],
                         ),
                       );
@@ -274,18 +287,46 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
             ),
           ),
           const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildCountdownUnit('01', 'Jam'),
-              _buildCountdownSeparator(),
-              _buildCountdownUnit('23', 'Menit'),
-              _buildCountdownSeparator(),
-              _buildCountdownUnit('45', 'Detik'),
-            ],
-          ),
+          _buildNextPrayerCountdownCountdown(),
         ],
       ),
+    );
+  }
+
+  Widget _buildNextPrayerCountdownCountdown() {
+    final prayerTimesAsync = ref.watch(prayerTimesProvider);
+    
+    return prayerTimesAsync.when(
+      data: (pt) {
+        if (pt == null) return const SizedBox.shrink();
+        
+        final next = pt.nextPrayer();
+        final nextTime = pt.timeForPrayer(next);
+        
+        if (nextTime == null) return const SizedBox.shrink();
+        
+        final now = DateTime.now();
+        final difference = nextTime.difference(now);
+        
+        if (difference.isNegative) return const SizedBox.shrink();
+        
+        final hours = difference.inHours.toString().padLeft(2, '0');
+        final minutes = (difference.inMinutes % 60).toString().padLeft(2, '0');
+        final seconds = (difference.inSeconds % 60).toString().padLeft(2, '0');
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildCountdownUnit(hours, 'Jam'),
+            _buildCountdownSeparator(),
+            _buildCountdownUnit(minutes, 'Menit'),
+            _buildCountdownSeparator(),
+            _buildCountdownUnit(seconds, 'Detik'),
+          ],
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator(color: AppColors.gold)),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 
@@ -337,29 +378,39 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
   }
 
   Widget _buildPrayerTimesList() {
-    const prayers = [
-      _PrayerData('Subuh', '04:45', AppColors.fajr, Icons.nights_stay_rounded),
-      _PrayerData('Terbit', '06:02', AppColors.sunrise, Icons.wb_twilight_rounded),
-      _PrayerData('Dzuhur', '12:02', AppColors.dhuhr, Icons.wb_sunny_rounded),
-      _PrayerData('Ashar', '15:15', AppColors.asr, Icons.cloud_rounded),
-      _PrayerData('Maghrib', '18:01', AppColors.maghrib, Icons.wb_twilight_outlined),
-      _PrayerData('Isya', '19:15', AppColors.isha, Icons.dark_mode_rounded),
-    ];
+    final prayerTimesAsync = ref.watch(prayerTimesProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Waktu Shalat Hari Ini',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 12),
-        ...prayers.map((p) => _buildPrayerItem(p, p.name == 'Isya')),
-      ],
+    return prayerTimesAsync.when(
+      data: (pt) {
+        if (pt == null) return const SizedBox.shrink();
+
+        final prayerData = [
+          _PrayerData('Subuh', DateFormat('HH:mm').format(pt.fajr), AppColors.fajr, Icons.nights_stay_rounded, Prayer.fajr),
+          _PrayerData('Terbit', DateFormat('HH:mm').format(pt.sunrise), AppColors.sunrise, Icons.wb_twilight_rounded, Prayer.sunrise),
+          _PrayerData('Dzuhur', DateFormat('HH:mm').format(pt.dhuhr), AppColors.dhuhr, Icons.wb_sunny_rounded, Prayer.dhuhr),
+          _PrayerData('Ashar', DateFormat('HH:mm').format(pt.asr), AppColors.asr, Icons.cloud_rounded, Prayer.asr),
+          _PrayerData('Maghrib', DateFormat('HH:mm').format(pt.maghrib), AppColors.maghrib, Icons.wb_twilight_outlined, Prayer.maghrib),
+          _PrayerData('Isya', DateFormat('HH:mm').format(pt.isha), AppColors.isha, Icons.dark_mode_rounded, Prayer.isha),
+        ];
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Waktu Shalat Hari Ini',
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+            ...prayerData.map((p) => _buildPrayerItem(p, p.type == pt.nextPrayer())),
+          ],
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, __) => const Text('Gagal memuat jadwal shalat'),
     );
   }
 
@@ -449,7 +500,8 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
       ),
       child: Row(
         children: [
-          const Icon(Icons.calendar_today_rounded, color: AppColors.gold, size: 28),
+          const Icon(Icons.calendar_today_rounded,
+              color: AppColors.gold, size: 28),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -481,21 +533,29 @@ class _PrayerTimesScreenState extends ConsumerState<PrayerTimesScreen>
 
   String _getPrayerName(Prayer prayer) {
     switch (prayer) {
-      case Prayer.fajr: return 'Subuh';
-      case Prayer.sunrise: return 'Terbit';
-      case Prayer.dhuhr: return 'Dzuhur';
-      case Prayer.asr: return 'Ashar';
-      case Prayer.maghrib: return 'Maghrib';
-      case Prayer.isha: return 'Isya';
-      default: return '';
+      case Prayer.fajr:
+        return 'Subuh';
+      case Prayer.sunrise:
+        return 'Terbit';
+      case Prayer.dhuhr:
+        return 'Dzuhur';
+      case Prayer.asr:
+        return 'Ashar';
+      case Prayer.maghrib:
+        return 'Maghrib';
+      case Prayer.isha:
+        return 'Isya';
+      default:
+        return '';
     }
   }
 }
 
 class _PrayerData {
-  const _PrayerData(this.name, this.time, this.color, this.icon);
+  const _PrayerData(this.name, this.time, this.color, this.icon, this.type);
   final String name;
   final String time;
   final Color color;
   final IconData icon;
+  final Prayer type;
 }

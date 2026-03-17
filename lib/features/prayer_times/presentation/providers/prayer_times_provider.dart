@@ -30,7 +30,7 @@ final coordinatesProvider = FutureProvider<Coordinates?>((ref) async {
   try {
     Position position = await Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(accuracy: LocationAccuracy.low), // Akurasi rendah supaya cepat untuk jam salat sudah cukup
-    );
+    ).timeout(const Duration(seconds: 5));
     return Coordinates(position.latitude, position.longitude);
   } catch (e) {
     return Coordinates(-6.2088, 106.8456);

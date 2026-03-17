@@ -33,7 +33,6 @@ class _SurahDetailScreenState extends ConsumerState<SurahDetailScreen> {
   Widget build(BuildContext context) {
     final surahDetailAsync = ref.watch(surahDetailProvider(widget.surahId));
     final quranSettings = ref.watch(quranSettingsProvider);
-    final favorites = ref.watch(favoritesProvider);
     final favoritesNotifier = ref.read(favoritesProvider.notifier);
 
     return Scaffold(
