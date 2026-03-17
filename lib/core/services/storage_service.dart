@@ -17,7 +17,8 @@ class StorageService {
     return box.containsKey(key);
   }
 
-  Future<void> toggleBookmark(String surahId, int verseNumber, Map<String, dynamic> data) async {
+  Future<void> toggleBookmark(
+      String surahId, int verseNumber, Map<String, dynamic> data) async {
     final box = Hive.box(bookmarksBox);
     final key = '${surahId}_$verseNumber';
 

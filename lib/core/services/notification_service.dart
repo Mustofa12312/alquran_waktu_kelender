@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -32,9 +33,14 @@ class NotificationService {
       requestSoundPermission: true,
     );
 
-    const initializationSettings = InitializationSettings(
+    const initializationSettingsLinux = LinuxInitializationSettings(
+      defaultActionName: 'Open notification',
+    );
+
+    final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
+      linux: Platform.isLinux ? initializationSettingsLinux : null,
     );
 
     await _notificationsPlugin.initialize(
